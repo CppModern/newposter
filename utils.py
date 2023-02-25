@@ -312,8 +312,8 @@ def get_coupons_data(prods: List[dict]):
 def buildmenubutton(data: dict, cancellable=True, skip=False):
     buttons = []
     keys = list(data.keys())
-    for i in range(0, len(keys), 2):
-        sub = keys[i: i+2]
+    for i in range(0, len(keys)):
+        sub = keys[i: i+1]
         info = []
         for j in sub:
             but = InlineKeyboardButton(data.get(j), callback_data=j)

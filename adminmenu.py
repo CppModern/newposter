@@ -454,7 +454,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
         text = selection
         gdata = {}
         for group in groups:
-            gdata[group["group_id"]] = group["group_title"]
+            gdata[group["group_id"]] = group["group_title"][:8]
         buttons = utils.buildmenubutton(gdata)
         buttons.append([InlineKeyboardButton(worker.loc.get("menu_done"), callback_data="cmd_done")])
         buttons_copy = list(buttons)
