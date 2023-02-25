@@ -234,7 +234,6 @@ def get_user_groups(request: http.HttpRequest, user_id):
 def get_users(request: http.HttpRequest):
     data = []
     users = MyUser.objects.filter(banned=False, is_admin=False).select_related()
-    print(users)
     fields = ["telegram_id", "balance", "period", "last_post"]
     for user in users:
         user: MyUser
@@ -274,7 +273,6 @@ def get_user(request: http.HttpRequest, pk):
     stamp = user.period
     period = datetime.datetime.fromtimestamp(stamp)
     expiry = period - datetime.datetime.now()
-    print(expiry.days)
     if expiry.days < 0 and not user.is_admin:
         return JsonResponse({"expired": True})
     telegram_id = user.telegram_id
