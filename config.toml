@@ -1,0 +1,29 @@
+[Telegram]
+token = "6170424695:AAE8_AZzrH0pErd_iVccnNNTVP4CU3dCRas"
+# Time in seconds before a conversation (thread) with no new messages expires
+# A lower value reduces memory usage, but can be inconvenient for the users
+conversation_timeout = 1000000
+# Time to wait before sending another update request if there are no messages
+long_polling_timeout = 30
+# Time in seconds before retrying a request if it times out
+timed_out_pause = 1
+# Time in seconds before retrying a request that returned an error
+
+error_pause = 1
+# Number of connections to keep in the connection pool
+con_pool_size = 10
+
+
+[API]
+base = "http://127.0.0.1:8200/{}"
+
+[Language]
+enabled_languages = "en"
+fallback_language = "en"
+default_language = "en"
+[Meta]
+# users must be in this group before able to use the bot
+group = "@testinghell"
+
+[Appearance]
+display_welcome_message = "yes"

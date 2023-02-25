@@ -1,0 +1,53 @@
+Characterization document for the bot
+
+The bot will send ads from advertisers who have received permission to do so in advance.
+Permissions will be granted by an administrator at his discretion and he can add users for the number of days he decides himself.
+One week before the end of the authorization period, the advertiser will receive a notification that he has one week left to advertise.
+One day before the end of the authorization period, the advertiser will receive a notification that he has one day left to advertise.
+At the end of the authorization period, the advertiser will not be able to post any more (if it is possible to save his DB so that when he returns he can simply press buttons and not prepare new ads, that would be great)
+There will be a one-hour limit on each channel/or ad (each advertiser will have the option to send each channel one ad per hour) in case an advertiser tries to post an ad before an hour has passed, the bot will tell him: "You have to wait another X minutes before you can post". As soon as an hour has passed, the advertiser will receive a message from the bot: "Now you can post again (with a button to post ads)"
+The administrator will have the option to edit permissions and view the remaining time for each advertiser, add time or delete users, add/delete groups and channels.
+Throughout the process of the bot there will be a keyboard with the button: Return which will take the user one step back
+
+Management panel for managers.
+ In the management panel, when the bot verifies that the person who pressed /START is an administrator, it will tell him: "Welcome, administrator"
+A floating keyboard will open for the manager and it will have buttons
+• Add a group (another group will be added to the bot to which later the advertisers can send)
+• Add an advertiser (will add permission to the advertiser for a specific period of time, for example { username 30 [will enter the user for a period of 30 days] })
+• Remove a group (delete a group for publication)
+• Remove an advertiser (remove an advertiser before the end of the allotted time)
+• Viewing advertisers (will show all active advertisers and how much time they have left to publish)
+
+Pressing Start for a person who did not receive permission from the administrator
+ In the event that a person without privileges or who has run out of privileges clicks start, an image or gif will open that can be changed (randomly). Suggestion: create a channel of images and gifs and ask the bot to choose a random image or gif.
+Then there will be a caption: You do not have permissions to use the bot, please contact the administrator
+
+Clicking Start for a person who has received permissions from the administrator
+ In the event that a person with privileges clicks Start, an image or gif will open as in the previous section.
+An advertiser panel will open
+Floating keyboard
+• Creating a new publication
+• Sending all publications
+• Publishing publications
+
+Create a new publication
+ When an advertiser clicks the button create a new advertisement the bot will ask him to send a picture of the product
+The bot will know how to receive a picture, gif or video
+After sending one of the above, the bot will move to the next step: adding a caption to the product
+In case an incompatible file is sent, the bot will say that only an image, gif or video should be sent and will repeat the previous step.
+When the bot asks to add a caption, the bot will know how to receive a caption in Hebrew, English and Russian, and of course it will also know how to receive a link.
+After that, when the caption is sent, the bot will ask to associate the ad with a certain group and will open a keyboard with all the channels and groups that exist in the bot
+The bot will then say that the ad has been saved successfully and will open a keyboard
+• To view the ad (it will display the ad as it will be sent to the channel, a button to edit this ad will also open and the name of the channel to which the ad is associated will be displayed (it will be possible to change the text, the image and associate it with another channel)
+• Deletion of the ad
+• Send only this ad (will send the ad to the channel it is associated with)
+• Return to the main menu (start)
+
+Sending all publications
+ The send all publications button will send all the publications edited at once to all the pre-defined channels and groups
+
+
+
+
+editing publications
+ The edit ads button will open all the ads that the advertiser has and will allow the advertiser to edit the image/video/gif, the text and the group to which the ad is associated
