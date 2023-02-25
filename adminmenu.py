@@ -276,7 +276,7 @@ def edit_post(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
     has_media = False
     if isinstance(data, telegram.Update):
         if data.callback_query.data == "cmd_cancel":
-            return postmenu(worker, selection.callback_query)
+            return worker.admin_menu(selection.callback_query)
     else:
         has_media = True
         if isinstance(data, list):
@@ -289,49 +289,10 @@ def edit_post(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
         elif isinstance(data, telegram.Animation):
             media = data.file_id
             media_type = 2
-
-    skip = utils.buildmenubutton({}, skip=True)
-    worker.bot.send_message(
+    hasbutt = True
+    blist = [[InlineKeyboardButton("Contact Seller", url=f"https://t.me/{worker.telegram_user.username}")]]
+    log = worker.bot.send_message(
         worker.chat.id,
-        worker.loc.get("post_buttons"),
-        reply_markup=InlineKeyboardMarkup(skip)
-    )
-    hasbutt = False
-    while True:
-        selection = worker.wait_for_regex("(.+)", cancellable=True)
-        if isinstance(selection, telegram.Update):
-            if selection.callback_query.data == "cmd_cancel":
-                return postmenu(worker, selection.callback_query)
-            break
-        raw = selection.split("\n")
-        if not all([len(i.split("|")) == 2 for i in raw]):
-            worker.bot.send_message(
-                worker.chat.id,
-                worker.loc.get("post_buttons"),
-                reply_markup=InlineKeyboardMarkup(skip)
-            )
-            continue
-        hasbutt = True
-        break
-    if hasbutt:
-        pbutt = ""
-        blist = []
-        for line in raw:
-            line = line.split("|")
-            disp = line[0].strip()
-            link = line[1].strip()
-            if not link.startswith("https") or not link.startswith("http"):
-                continue
-            blist.append(
-                [InlineKeyboardButton(disp, url=link)]
-            )
-
-            line = f"{disp}|{link}"
-            pbutt += line + "<>"
-        pbutt = pbutt.rsplit("<>", 1)[0]
-        pbutt = pbutt.strip()
-
-    log = selection.callback_query.edit_message_text(
         worker.loc.get("confirm_info")
     )
     try:
@@ -401,7 +362,7 @@ def edit_post(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
             worker.chat.id,
             worker.loc.get("critical")
         )
-        return postmenu(worker)
+        return worker.admin_menu()
     confirm = {"confirm": worker.loc.get("confirm")}
     confirmbut = utils.buildmenubutton(confirm)
     worker.bot.send_message(
@@ -413,13 +374,13 @@ def edit_post(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
     if selection.data == "cmd_cancel":
         log.delete()
         msg.delete()
-        return postmenu(worker, selection)
+        return worker.admin_menu(selection)
     data = {"content": text, "user_id": worker.telegram_user.id, "duration": "", "groups": groups}
     if has_media:
         data["media"] = media
         data["media_type"] = media_type
     if hasbutt:
-        data["button"] = pbutt
+        data["button"] = f"Contact Seller | https://t.me{worker.telegram_user.username}"
     log.delete()
     msg.delete()
     worker.add_post(data, post_id=post_id)
@@ -437,12 +398,12 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
                 selection.edit_message_text(
                     worker.loc.get("group_not_available")
                 )
-                return postmenu(worker)
+                return worker.admin_menu()
             worker.bot.send_message(
                 worker.chat.id,
                 worker.loc.get("group_not_available")
             )
-            return postmenu(worker)
+            return worker.admin_menu()
         selection.edit_message_text(
             worker.loc.get("post_text"),
             reply_markup=worker.cancel_marked,
@@ -450,7 +411,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
         )
         selection = worker.wait_for_regex("(.*)", cancellable=True, mark=True)
         if isinstance(selection, telegram.Update):
-            return postmenu(worker, selection.callback_query)
+            return worker.admin_menu(selection.callback_query)
         text = selection
         gdata = {}
         for group in groups:
@@ -504,7 +465,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
         has_media = False
         if isinstance(data, telegram.Update):
             if data.callback_query.data == "cmd_cancel":
-                return postmenu(worker, selection.callback_query)
+                return worker.admin_menu(selection.callback_query)
         else:
             has_media = True
             if isinstance(data, list):
@@ -517,71 +478,10 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
             elif isinstance(data, telegram.Animation):
                 media = data.file_id
                 media_type = 2
-
-        skip = utils.buildmenubutton({}, skip=True)
-        worker.bot.send_message(
+        hasbutt = True
+        blist = [[InlineKeyboardButton("Contact Seller", url=f"https://t.me/{worker.telegram_user.username}")]]
+        log = worker.bot.send_message(
             worker.chat.id,
-            worker.loc.get("post_buttons"),
-            reply_markup=InlineKeyboardMarkup(skip)
-        )
-        hasbutt = False
-        while True:
-            selection = worker.wait_for_regex("(.+)", cancellable=True)
-            if isinstance(selection, telegram.Update):
-                if selection.callback_query.data == "cmd_cancel":
-                    return postmenu(worker, selection.callback_query)
-                selection = selection.callback_query
-                break
-            raw = selection.split("\n")
-            if not all([len(i.split("|")) == 2 for i in raw]):
-                worker.bot.send_message(
-                    worker.chat.id,
-                    worker.loc.get("post_buttons"),
-                    reply_markup=InlineKeyboardMarkup(skip)
-                )
-                continue
-            hasbutt = True
-            break
-        if hasbutt:
-            pbutt = ""
-            blist = []
-            for line in raw:
-                line = line.split("|")
-                disp = line[0].strip()
-                link = line[1].strip()
-                if not link.startswith("https") or not link.startswith("http"):
-                    continue
-                blist.append(
-                    [InlineKeyboardButton(disp, url=link)]
-                )
-
-                line = f"{disp}|{link}"
-                pbutt += line + "<>"
-            pbutt = pbutt.rsplit("<>", 1)[0]
-            pbutt = pbutt.strip()
-        """# Post duration
-        data = {
-            "fivemin": worker.loc.get("fivemin"),
-            "tenmin": worker.loc.get("tenmin"),
-            "thirtymin": worker.loc.get("thirtymin"),
-            "onehour": worker.loc.get("onehour"),
-            "onethirty": worker.loc.get("onethirty"),
-            "twohours": worker.loc.get("twohours"),
-            "threehours": worker.loc.get("threehours")
-        }
-        durbuttons = utils.buildmenubutton(data)
-        worker.bot.send_message(
-            worker.chat.id,
-            worker.loc.get("duration"),
-            reply_markup=InlineKeyboardMarkup(durbuttons)
-        )
-        selection = worker.wait_for_inlinekeyboard_callback(cancellable=True)
-        if selection.data == "cmd_cancel":
-            return postmenu(worker, selection)
-
-        #  Post confirmation
-        duration = selection.data"""
-        log = selection.edit_message_text(
             worker.loc.get("confirm_info")
         )
         try:
@@ -651,7 +551,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
                 worker.chat.id,
                 worker.loc.get("critical")
             )
-            return postmenu(worker)
+            return worker.admin_menu()
         confirm = {"confirm": worker.loc.get("confirm")}
         confirmbut = utils.buildmenubutton(confirm)
         worker.bot.send_message(
@@ -663,13 +563,13 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
         if selection.data == "cmd_cancel":
             log.delete()
             msg.delete()
-            return postmenu(worker, selection)
+            return worker.admin_menu(selection)
         data = {"content": text, "user_id": worker.telegram_user.id, "groups": groups}
         if has_media:
             data["media"] = media
             data["media_type"] = media_type
         if hasbutt:
-            data["button"] = pbutt
+            data["button"] = f"Contact Seller | https://t.me/{worker.telegram_user.username}"
         log.delete()
         msg.delete()
         worker.add_post(data)

@@ -406,6 +406,7 @@ class Worker(threading.Thread):
                     each = each.split("|")
                     try:
                         disp, url = each
+                        url = url.strip()
                     except ValueError as e:
                         print(f"{each=},  {e}")
                         button = ""
