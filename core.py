@@ -30,7 +30,7 @@ def send_notification():
     for user in users:
         if last := float(user.get("last_post")):
             now = datetime.datetime.now().timestamp()
-            dur = now - last
+            dur = (now - last) / 60
             if dur >= 60:
                 # update the last_post
                 url = base.format(f"payment/update_last/")
