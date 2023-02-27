@@ -6,7 +6,7 @@ menu_done = "DONE"
 welcome = "Welcome, administrator"
 welcome_user = "Welcome advertiser"
 critical = "Error Occurred while processing your post data"
-contact = "Developer 🛠️"
+contact = "Contact"
 # group management
 group_button = "GROUPS 📢"
 group_add = "ADD GROUP ➕"

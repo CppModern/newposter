@@ -290,7 +290,7 @@ def edit_post(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
             media = data.file_id
             media_type = 2
     hasbutt = True
-    blist = [[InlineKeyboardButton("Contact Seller", url=f"https://t.me/{worker.telegram_user.username}")]]
+    blist = [[InlineKeyboardButton("😎פנה למפרסם😎", url=f"https://t.me/{worker.telegram_user.username}")]]
     log = worker.bot.send_message(
         worker.chat.id,
         worker.loc.get("confirm_info")
@@ -380,7 +380,7 @@ def edit_post(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
         data["media"] = media
         data["media_type"] = media_type
     if hasbutt:
-        data["button"] = f"Contact Seller | https://t.me{worker.telegram_user.username}"
+        data["button"] = f"😎פנה למפרסם😎 | https://t.me{worker.telegram_user.username}"
     log.delete()
     msg.delete()
     worker.add_post(data, post_id=post_id)
@@ -479,7 +479,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
                 media = data.file_id
                 media_type = 2
         hasbutt = True
-        blist = [[InlineKeyboardButton("Contact Seller", url=f"https://t.me/{worker.telegram_user.username}")]]
+        blist = [[InlineKeyboardButton("😎פנה למפרסם😎", url=f"https://t.me/{worker.telegram_user.username}")]]
         log = worker.bot.send_message(
             worker.chat.id,
             worker.loc.get("confirm_info")
@@ -569,7 +569,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
             data["media"] = media
             data["media_type"] = media_type
         if hasbutt:
-            data["button"] = f"Contact Seller | https://t.me/{worker.telegram_user.username}"
+            data["button"] = f"😎פנה למפרסם😎 | https://t.me/{worker.telegram_user.username}"
         log.delete()
         msg.delete()
         worker.add_post(data)
