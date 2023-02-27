@@ -135,7 +135,7 @@ class Worker(threading.Thread):
         return self.user"""
 
     def __create_localization(self):
-        self.loc = localisation.Localisation("en")
+        self.loc = localisation.Localisation("heb")
 
     def admin_menu(self, selection: telegram.CallbackQuery = None):
         if self.admin:
@@ -161,7 +161,7 @@ class Worker(threading.Thread):
         if self.special:
             buttons.append(
                 [telegram.InlineKeyboardButton(
-                    self.loc.get("contact",), url="https://t.me/frozymelon"
+                    self.loc.get("contact",), url="https://t.me/adduserst"
                 )]
             )
         text = self.loc.get("welcome") if self.admin else self.loc.get("welcome_user")
