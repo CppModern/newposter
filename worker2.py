@@ -101,6 +101,11 @@ class Worker(threading.Thread):
             self.admin = user["admin"]
             if self.special or self.admin:
                 self.admin_menu()
+            else:
+                self.bot.send_message(
+                    self.chat.id,
+                    self.loc.get("no_perm")
+                )
 
         except Exception as e:
             # Try to notify the user of the exception
