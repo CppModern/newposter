@@ -321,13 +321,13 @@ def buildmenubutton(data: dict, cancellable=True, skip=False):
         buttons.append(info)
     if cancellable and skip:
         extra = [
-            InlineKeyboardButton("🔙 Cancel", callback_data="cmd_cancel"),
-            InlineKeyboardButton("⏭ Skip", callback_data="cmd_skip")
+            InlineKeyboardButton("🔙 ביטול", callback_data="cmd_cancel"),
+            InlineKeyboardButton("⏭ דלג", callback_data="cmd_skip")
         ]
         buttons.append(extra)
     elif cancellable:
         extra = [
-            InlineKeyboardButton("🔙 Cancel", callback_data="cmd_cancel"),
+            InlineKeyboardButton("🔙 ביטול", callback_data="cmd_cancel"),
         ]
         buttons.append(extra)
     return buttons

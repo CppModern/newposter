@@ -159,7 +159,7 @@ class Worker(threading.Thread):
                 "new": self.loc.get("newPost"),
                 "pub": self.loc.get("post_send"),
                 "hist": self.loc.get("myPost"),
-                "edit": "EDIT POST",
+                "edit": "ערוך",
                 "lang": self.loc.get("language_button")
             }
         buttons = buildmenubutton(data, cancellable=False)
