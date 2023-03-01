@@ -51,13 +51,15 @@ def notify_subscription():
     base: str = cfg["API"]["base"]
     url = base.format(f"payment/users/")
     users: list[dict] = requests.get(url).json()["users"]
-    trans = {1: "one", 7: "seven"}
+    trans = {
+        1: "נשאר לך עוד יום אחרון להשתמש בבוט, דבר עם המנהלים בהקדם",
+        7: "נשאר לך עוד שבוע להשתמש בבוט, דבר עם המנהלים"}
     for user in users:
         remaining = int(user.get("days_remaning"))
         if remaining in [1, 7]:
             try:
                 bot.send_message(
-                    user.get("telegram_id"), f"You have {trans[remaining]} days left on your subscription"
+                    user.get("telegram_id"), f"{trans[remaining]}"
                 )
             except Exception:
                 continue
@@ -194,22 +196,17 @@ def main():
                         "Press /start to restart the bot"
                     )
                     continue
-                """data = update.callback_query.data
+                data = update.callback_query.data
                 if "delete" in data:
                     update.callback_query.answer()
-                    update.callback_query.message.delete()
+                    # update.callback_query.message.delete()
                     pk = data.split("_")[1]
+                    receiving_worker.delete_post(pk)
                     try:
-                        adminmenu.edit_post(receiving_worker, pk)
+                        update.callback_query.edit_message_text(receiving_worker.loc.get("post_deleted"))
                     except Exception as e:
                         print(e)
-                        receiving_worker.bot.send_message(
-                            receiving_worker.chat.id,
-                            "An error occurred while processing. You can report to the developer"
-                        )
-                        receiving_worker.admin_menu()
-                        next_update = updates[-1].update_id + 1
-                    continue"""
+                    continue
                 receiving_worker.queue.put(update)
 
         # If there were any updates...
