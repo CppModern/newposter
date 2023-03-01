@@ -97,8 +97,8 @@ class Worker(threading.Thread):
                     self.loc.get("no_perm")
                 )
                 return
-            self.special = user["special"]
-            self.admin = user["admin"]
+            self.special = user.get("special")
+            self.admin = user.get("admin")
             if self.special or self.admin:
                 self.admin_menu()
             else:
@@ -304,6 +304,7 @@ class Worker(threading.Thread):
         return res
 
     def get_user(self, user_id):
+        user_id = user_id.lower()
         url = self.cfg["API"]["base"].format(f"payment/user/{user_id}/")
         user = requests.get(url).json()
         if "expired" in user:
