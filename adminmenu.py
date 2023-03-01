@@ -725,8 +725,7 @@ def add_admin(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
     if action == "view_admin":
         users = worker.get_users()
         if not users:
-            worker.bot.send_message(
-                worker.chat.id,
+            selection.edit_message_text(
                 worker.loc.get("admin_unavailable")
             )
             return worker.admin_menu()
@@ -735,8 +734,7 @@ def add_admin(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
               "Day Remaning: {days_remaning}\n\n\n"
         for user in users:
             text += fmt.format(**user)
-        worker.bot.send_message(
-            worker.chat.id,
+        selection.edit_message_text(
             text
         )
         return worker.admin_menu()
