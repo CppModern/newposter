@@ -714,7 +714,7 @@ def add_admin(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
                 worker.loc.get("admin_data_invalid")
             )
             return worker.admin_menu()
-        username = data[0].replace("https://t.me/", "")
+        username = data[0].replace("https://t.me/", "").lower()
         username = username if username.startswith("@") else "@" + username
         worker.promoteuser(username, days=int(data[1]))
         worker.bot.send_message(
