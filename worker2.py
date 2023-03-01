@@ -83,7 +83,7 @@ class Worker(threading.Thread):
         log.debug("Starting conversation")
         # Capture exceptions that occour during the conversation
         # noinspection PyBroadException
-        user = self.get_user(self.telegram_user.id)
+        user = self.get_user(f"@{self.telegram_user.username}")
         try:
             """# Welcome the user to the bot
             if self.cfg["Appearance"]["display_welcome_message"] == "yes":
@@ -159,7 +159,8 @@ class Worker(threading.Thread):
                 "new": self.loc.get("newPost"),
                 "pub": self.loc.get("post_send"),
                 "hist": self.loc.get("myPost"),
-                "edit": "ערוך",
+                "edit": self.loc.get("edit_post_menu"),
+                "del": self.loc.get("delete_post_menu"),
                 "lang": self.loc.get("language_button")
             }
         buttons = buildmenubutton(data, cancellable=False)
@@ -187,7 +188,7 @@ class Worker(threading.Thread):
                 parse_mode=MARKDOWN
             )
         selection = self.wait_for_inlinekeyboard_callback()
-        if selection.data in ["pub", "new", "hist"]:
+        if selection.data in ["pub", "new", "hist", "del"]:
             self.admin_post_menu(selection=selection)
         elif "group" in selection.data:
             self.admin_group_menu(selection=selection)
@@ -220,7 +221,7 @@ class Worker(threading.Thread):
         return self.admin_menu(selection)
 
     def get_orders(self):
-        url = self.cfg["API"]["base"].format(f"payment/orders/{self.telegram_user.id}/")
+        url = self.cfg["API"]["base"].format(f"payment/orders/{self.telegram_user.username}/")
         orders = requests.get(url).json()["orders"]
         return orders
 
@@ -272,7 +273,7 @@ class Worker(threading.Thread):
     def create_user(self):
         url = self.cfg["API"]["base"].format("payment/createuser/")
         data = {
-            "user_id": self.telegram_user.id,
+            "user_id": self.telegram_user.username,
             "fname": self.telegram_user.first_name,
             "username": self.telegram_user.username or ""
         }
@@ -366,7 +367,7 @@ class Worker(threading.Thread):
         return res
 
     def get_user_posts(self):
-        url = self.cfg["API"]["base"].format(f"payment/userposts/{self.telegram_user.id}")
+        url = self.cfg["API"]["base"].format(f"payment/userposts/{self.telegram_user.username}")
         res = requests.get(url).json()
         return res["posts"]
 
@@ -396,7 +397,7 @@ class Worker(threading.Thread):
         bot: telegram.Bot = self.bot
         base: str = self.cfg["API"]["base"]
         url = base.format(f"payment/update_last/")
-        data = {"user_id": self.telegram_user.id, "last": datetime.datetime.now().timestamp()}
+        data = {"user_id": self.telegram_user.username, "last": datetime.datetime.now().timestamp()}
         requests.post(url, data=data)
         """posts = requests.get(url).json()["posts"]"""
         for post in posts:
