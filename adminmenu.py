@@ -56,7 +56,7 @@ def group_menu(worker: "worker2.Worker", selection: telegram.CallbackQuery = Non
             return worker.admin_menu()
         info = worker.bot.getChat(selection)
         group_id, group_title = info["id"], info["title"]
-        owner = worker.telegram_user.id
+        owner = worker.telegram_user.username
         data = {"group_id": group_id, "group_title": group_title, "owner": f"{owner}"}
         worker.add_group(data)
 
@@ -375,7 +375,7 @@ def edit_post(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
         log.delete()
         msg.delete()
         return worker.admin_menu(selection)
-    data = {"content": text, "user_id": worker.telegram_user.id, "duration": "", "groups": groups}
+    data = {"content": text, "user_id": worker.telegram_user.username, "duration": "", "groups": groups}
     if has_media:
         data["media"] = media
         data["media_type"] = media_type
@@ -564,7 +564,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
             log.delete()
             msg.delete()
             return worker.admin_menu(selection)
-        data = {"content": text, "user_id": worker.telegram_user.id, "groups": groups}
+        data = {"content": text, "user_id": worker.telegram_user.username, "groups": groups}
         if has_media:
             data["media"] = media
             data["media_type"] = media_type
@@ -584,7 +584,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
                 worker.chat.id, worker.loc.get("no_posts")
             )
             return
-        user = worker.get_user(worker.telegram_user.id)
+        user = worker.get_user(worker.telegram_user.username)
         last = user["last_post"]
         if not last:
             ...
@@ -646,6 +646,55 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
                         parse_mode=MARKDOWN
                     )
         return worker.admin_menu()
+    elif selection.data == "del":
+        posts = worker.get_user_posts()
+        if not posts:
+            selection.edit_message_text(
+                worker.loc.get("no_posts")
+            )
+            return worker.admin_menu()
+        selection.edit_message_text(
+            worker.loc.get("posts_hist_info")
+        )
+        btext = worker.loc.get("delete_post_b")
+        for post in posts:
+            media = post["media"]
+            text = post["content"]
+            pk = post["pk"]
+            blist = InlineKeyboardMarkup([[InlineKeyboardButton(btext, callback_data=f"delete_{pk}")]])
+            if not media:
+                worker.bot.send_message(
+                    worker.chat.id,
+                    text,
+                    reply_markup=blist,
+                )
+            else:
+                media_type = post["media_type"]
+                if media_type == 0:
+                    worker.bot.send_photo(
+                        worker.chat.id,
+                        photo=media,
+                        caption=text,
+                        reply_markup=blist,
+                        parse_mode=MARKDOWN
+                    )
+                elif media_type == 1:
+                    worker.bot.send_video(
+                        worker.chat.id,
+                        video=media,
+                        caption=text,
+                        reply_markup=blist,
+                        parse_mode=MARKDOWN
+                    )
+                elif media_type == 2:
+                    worker.bot.send_animation(
+                        worker.chat.id,
+                        animation=media,
+                        caption=text,
+                        reply_markup=blist,
+                        parse_mode=MARKDOWN
+                    )
+        return worker.admin_menu()
 
 
 def add_admin(worker: "worker2.Worker", selection: telegram.CallbackQuery = None):
@@ -655,23 +704,19 @@ def add_admin(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
             worker.loc.get("admin_id_promt"),
             reply_markup=worker.cancel_marked
         )
-        selection = worker.wait_for_regex("(\d+ \d+)", cancellable=True)
+        selection = worker.wait_for_regex("(.*)", cancellable=True)
         if isinstance(selection, telegram.Update):
             return worker.admin_menu(selection.callback_query)
         data = selection.split(" ")
-        if not data[0].isnumeric():
-            worker.bot.send_message(
-                worker.chat.id,
-                worker.loc.get("admin_id_invalid")
-            )
-            return worker.admin_menu()
         if (len(data) < 2) or not data[1].isnumeric():
             worker.bot.send_message(
                 worker.chat.id,
                 worker.loc.get("admin_data_invalid")
             )
             return worker.admin_menu()
-        worker.promoteuser(data[0], days=int(data[1]))
+        username = data[0].replace("https://t.me/", "")
+        username = username if username.startswith("@") else "@" + username
+        worker.promoteuser(username, days=int(data[1]))
         worker.bot.send_message(
             worker.chat.id,
             worker.loc.get("admin_added")
@@ -700,7 +745,7 @@ def add_admin(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
             worker.loc.get("admin_id_delete"),
             reply_markup=worker.cancel_marked
         )
-        selection = worker.wait_for_regex("(\d+)", cancellable=True)
+        selection = worker.wait_for_regex("(.*)", cancellable=True)
         if isinstance(selection, telegram.Update):
             return worker.admin_menu(selection.callback_query)
         res = worker.ban(selection)
