@@ -305,6 +305,7 @@ class Worker(threading.Thread):
 
     def get_user(self, user_id):
         user_id = user_id.lower()
+        user_id = user_id if user_id.startswith("@") else "@" + user_id
         url = self.cfg["API"]["base"].format(f"payment/user/{user_id}/")
         user = requests.get(url).json()
         if "expired" in user:
