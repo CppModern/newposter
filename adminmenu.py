@@ -584,7 +584,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
                 worker.chat.id, worker.loc.get("no_posts")
             )
             return
-        user = worker.get_user(worker.telegram_user.username)
+        user = worker.get_user(f"@{worker.telegram_user.username}")
         last = user["last_post"]
         if not last:
             ...
@@ -746,6 +746,7 @@ def add_admin(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
         selection = worker.wait_for_regex("(.*)", cancellable=True)
         if isinstance(selection, telegram.Update):
             return worker.admin_menu(selection.callback_query)
+
         res = worker.ban(selection)
         if "error" in res:
             worker.bot.send_message(

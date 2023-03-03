@@ -221,7 +221,7 @@ class Worker(threading.Thread):
         return self.admin_menu(selection)
 
     def get_orders(self):
-        url = self.cfg["API"]["base"].format(f"payment/orders/{self.telegram_user.username}/")
+        url = self.cfg["API"]["base"].format(f"payment/orders/@{self.telegram_user.username}/")
         orders = requests.get(url).json()["orders"]
         return orders
 
@@ -273,7 +273,7 @@ class Worker(threading.Thread):
     def create_user(self):
         url = self.cfg["API"]["base"].format("payment/createuser/")
         data = {
-            "user_id": self.telegram_user.username,
+            "user_id": f"@{self.telegram_user.username}",
             "fname": self.telegram_user.first_name,
             "username": self.telegram_user.username or ""
         }
@@ -369,7 +369,7 @@ class Worker(threading.Thread):
         return res
 
     def get_user_posts(self):
-        url = self.cfg["API"]["base"].format(f"payment/userposts/{self.telegram_user.username}")
+        url = self.cfg["API"]["base"].format(f"payment/userposts/@{self.telegram_user.username}")
         res = requests.get(url).json()
         return res["posts"]
 
@@ -399,7 +399,7 @@ class Worker(threading.Thread):
         bot: telegram.Bot = self.bot
         base: str = self.cfg["API"]["base"]
         url = base.format(f"payment/update_last/")
-        data = {"user_id": self.telegram_user.username, "last": datetime.datetime.now().timestamp()}
+        data = {"user_id": f"@{self.telegram_user.username}", "last": datetime.datetime.now().timestamp()}
         requests.post(url, data=data)
         """posts = requests.get(url).json()["posts"]"""
         for post in posts:
