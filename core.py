@@ -39,7 +39,7 @@ def send_notification():
                 requests.post(url, data=data)
                 try:
                     bot.send_message(
-                    user_id, "You can now send new posts"
+                        user_id, "You can now send new posts"
                 )
                 except Exception:
                     continue
