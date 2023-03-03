@@ -428,7 +428,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
         while True:
             selection = worker.wait_for_inlinekeyboard_callback(cancellable=True)
             if selection.data == "cmd_cancel":
-                return worker.admin_post_menu(selection=selection)
+                return worker.admin_menu(selection=selection)
             elif selection.data == "cmd_done":
                 # check at least one user selected for the pm
                 if not selected:
