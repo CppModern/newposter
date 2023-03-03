@@ -375,7 +375,7 @@ def edit_post(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
         log.delete()
         msg.delete()
         return worker.admin_menu(selection)
-    data = {"content": text, "user_id": worker.telegram_user.username, "duration": "", "groups": groups}
+    data = {"content": text, "user_id": f"@{worker.telegram_user.username}", "duration": "", "groups": groups}
     if has_media:
         data["media"] = media
         data["media_type"] = media_type
