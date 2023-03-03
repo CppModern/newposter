@@ -590,11 +590,11 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
             ...
         else:
             now = datetime.now().timestamp()
-            res = (now - last) / 60
-            if res < 60:
+            res = (now - last) / 90
+            if res < 90:
                 worker.bot.send_message(
                     worker.chat.id,
-                    worker.loc.get("post_wait").format(int(60 - res))
+                    worker.loc.get("post_wait").format(int(90 - res))
                 )
                 return worker.admin_menu()
         worker.send_post(posts)
