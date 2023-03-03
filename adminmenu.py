@@ -583,7 +583,7 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
             worker.bot.send_message(
                 worker.chat.id, worker.loc.get("no_posts")
             )
-            return
+            return worker.admin_menu()
         user = worker.get_user(f"@{worker.telegram_user.username}")
         last = user["last_post"]
         if not last:
