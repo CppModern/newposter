@@ -52,6 +52,7 @@ def factory(cfg: nuconfig.NuConfig):
                                   f"Full error: {error.message}")
                         traceback.print_exception(*sys.exc_info())
                         time.sleep(cfg["Telegram"]["error_pause"])
+                break
 
         return result_func
 
