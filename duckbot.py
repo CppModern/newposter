@@ -54,6 +54,7 @@ def factory(cfg: nuconfig.NuConfig):
                         time.sleep(cfg["Telegram"]["error_pause"])
                 with open("erorr.txt", "a+") as file:
                     print(error.with_traceback(), file=file)
+                break
 
         return result_func
 
