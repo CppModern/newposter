@@ -26,7 +26,7 @@ def factory(cfg: nuconfig.NuConfig):
                     log.debug(f"Unauthorized to call {func.__name__}(), skipping.")
                     break
                 # Telegram API didn't answer in time
-                except telegram.error.TimedOut:
+                except telegram.error.TimedOut as error:
                     log.warning(f"Timed out while calling {func.__name__}(),"
                                 f" retrying in {cfg['Telegram']['timed_out_pause']} secs...")
                     time.sleep(cfg["Telegram"]["timed_out_pause"])
@@ -52,7 +52,8 @@ def factory(cfg: nuconfig.NuConfig):
                                   f"Full error: {error.message}")
                         traceback.print_exception(*sys.exc_info())
                         time.sleep(cfg["Telegram"]["error_pause"])
-                break
+                with open("erorr.txt", "a+") as file:
+                    print(error.with_traceback(), file=file)
 
         return result_func
 
