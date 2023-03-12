@@ -48,6 +48,7 @@ class MyUser(AbstractBaseUser):
     banned = models.BooleanField(default=False)
     special = models.BooleanField(default=False)
     objects = MyUserManager()
+    effective_id = models.CharField(default=str, max_length=100)
     period = models.FloatField(default=float)
     last_post = models.FloatField(default=float)
 

@@ -399,7 +399,11 @@ class Worker(threading.Thread):
         bot: telegram.Bot = self.bot
         base: str = self.cfg["API"]["base"]
         url = base.format(f"payment/update_last/")
-        data = {"user_id": f"@{self.telegram_user.username}", "last": datetime.datetime.now().timestamp()}
+        data = {
+            "effective_user": self.telegram_user.id,
+            "user_id": f"@{self.telegram_user.username}",
+            "last": datetime.datetime.now().timestamp()
+        }
         requests.post(url, data=data)
         """posts = requests.get(url).json()["posts"]"""
         for post in posts:

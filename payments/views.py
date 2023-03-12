@@ -234,7 +234,7 @@ def get_user_groups(request: http.HttpRequest, user_id):
 def get_users(request: http.HttpRequest):
     data = []
     users = MyUser.objects.filter(banned=False, is_admin=False).select_related()
-    fields = ["telegram_id", "balance", "period", "last_post"]
+    fields = ["telegram_id", "balance", "period", "last_post", "effective_id"]
     for user in users:
         user: MyUser
         stamp = getattr(user, "period")
@@ -406,11 +406,15 @@ def update_user_last(request: http.HttpRequest):
         return JsonResponse({"error": "method not allowed"})
     last = request.POST.get("last")
     user = request.POST.get("user_id")
+    effective_user = request.POST.get("effective_user")
     user: MyUser = MyUser.objects.get(pk=user)
     user.last_post = float(last)
+    if effective_user:
+        user.effective_id = effective_user
     user.save()
     return JsonResponse({"msg": "OK"})
 # ------------------------ Product Views --------------------------
+
 
 def get_products(request: http.HttpRequest):
     products: list[Product] = Product.objects.all()

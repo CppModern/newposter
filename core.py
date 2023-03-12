@@ -34,14 +34,16 @@ def send_notification():
             if dur >= 90:
                 # update the last_post
                 url = base.format(f"payment/update_last/")
-                user_id = user.get("telegram_id")
+                user_id: str = user.get("telegram_id")
+                effective_user = user.get("effective_id")
                 data = {"user_id": user_id, "last": 0.0}
                 requests.post(url, data=data)
                 try:
                     bot.send_message(
-                        user_id, "You can now send new posts"
-                )
-                except Exception:
+                        effective_user, "you can send posts now"
+                    )
+                except Exception as e:
+                    print(e)
                     continue
 
 
