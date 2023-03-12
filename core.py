@@ -40,7 +40,7 @@ def send_notification():
                 requests.post(url, data=data)
                 try:
                     bot.send_message(
-                        effective_user, "you can send posts now"
+                        effective_user, "עכשיו אפשר שוב לשלוח מודעה😎"
                     )
                 except Exception as e:
                     print(e)
