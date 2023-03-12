@@ -61,7 +61,7 @@ def notify_subscription():
         if remaining in [1, 7]:
             try:
                 bot.send_message(
-                    user.get("telegram_id"), f"{trans[remaining]}"
+                    user.get("effective_id"), f"{trans[remaining]}"
                 )
             except Exception:
                 continue
