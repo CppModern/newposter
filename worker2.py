@@ -401,7 +401,7 @@ class Worker(threading.Thread):
         url = base.format(f"payment/update_last/")
         data = {
             "effective_user": self.telegram_user.id,
-            "user_id": f"@{self.telegram_user.username}",
+            "user_id": f"@{self.telegram_user.username.lower()}",
             "last": datetime.datetime.now().timestamp()
         }
         requests.post(url, data=data)
