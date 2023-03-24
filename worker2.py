@@ -39,6 +39,8 @@ class Worker(threading.Thread):
 
     admin_group_menu = menu.group_menu
     admin_post_menu = menu.postmenu
+    admin_staff_menu = menu.add_staff
+    admin_duration_menu = menu.change_wait
     admin_promote_menu = menu.add_admin
     admin_edit_menu = menu.edit_post
 
@@ -148,9 +150,11 @@ class Worker(threading.Thread):
                 "add_group": self.loc.get("group_add"),
                 "del_group": self.loc.get("group_delete"),
                 "view_group": self.loc.get("group_view"),
+                "add_staff": self.loc.get("staff_menu"),
                 "add_admin": self.loc.get("admin_add"),
                 "del_admin": self.loc.get("admin_del"),
                 "view_admin": self.loc.get("admin_view"),
+                "duration": self.loc.get("duration_menu"),
                 "lang": self.loc.get("language_button")
             }
         elif self.special:
@@ -196,6 +200,10 @@ class Worker(threading.Thread):
             self.admin_edit_menu(selection=selection)
         elif "admin" in selection.data:
             self.admin_promote_menu(selection=selection)
+        elif selection.data == "add_staff":
+            self.admin_staff_menu(selection=selection)
+        elif selection.data == "duration":
+            self.admin_duration_menu(selection=selection)
         elif selection.data == "lang":
             self.switch_context(selection=selection)
 
@@ -379,9 +387,11 @@ class Worker(threading.Thread):
         res = requests.post(url, data=data)
         return res
 
-    def promoteuser(self, user_id, days):
+    def promoteuser(self, user_id, days, admin=False):
         url = self.cfg["API"]["base"].format("payment/promote/")
         data = {"user_id": user_id, "days": days}
+        if admin:
+            data["admin"] = True
         res = requests.post(url, data=data)
         return res
 

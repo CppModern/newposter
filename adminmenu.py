@@ -13,10 +13,54 @@ from pathlib import Path
 import _signals
 import utils
 from datetime import datetime, timedelta
+
 MARKDOWN = telegram.parsemode.ParseMode.MARKDOWN
 CancelSignal = _signals.CancelSignal
 StopSignal = _signals.StopSignal
 LOCK = threading.Lock()
+DATA = {"wait": 90}
+
+
+def change_wait(worker: "worker2.Worker", selection: telegram.CallbackQuery = None):
+    if selection:
+        selection.edit_message_text(
+            worker.loc.get("duration_prompt"),
+            reply_markup=worker.cancel_marked
+        )
+    selection = worker.wait_for_regex("(.*)", cancellable=True)
+    if isinstance(selection, telegram.Update):
+        return worker.admin_menu(selection.callback_query)
+    if not selection.isnumeric():
+        worker.bot.send_message(
+            worker.chat.id,
+            worker.loc.get("invalid_duration")
+        )
+        return worker.admin_menu()
+    selection = int(selection)
+    DATA["wait"] = selection
+    worker.bot.send_message(
+        worker.chat.id,
+        worker.loc.get("duration_saved")
+    )
+    return worker.admin_menu()
+
+
+def add_staff(worker: "worker2.Worker", selection: telegram.CallbackQuery = None):
+    selection.edit_message_text(
+        worker.loc.get("staff_id_prompt"),
+        reply_markup=worker.cancel_marked
+    )
+    selection = worker.wait_for_regex("(.*)", cancellable=True)
+    if isinstance(selection, telegram.Update):
+        return worker.admin_menu(selection.callback_query)
+    username = selection.replace("https://t.me/", "").lower()
+    username = username if username.startswith("@") else "@" + username
+    worker.promoteuser(username, days=1000, admin=True)
+    worker.bot.send_message(
+        worker.chat.id,
+        worker.loc.get("staff_added")
+    )
+    return worker.admin_menu()
 
 
 def group_menu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None):
@@ -590,11 +634,11 @@ def postmenu(worker: "worker2.Worker", selection: telegram.CallbackQuery = None)
             ...
         else:
             now = datetime.now().timestamp()
-            res = (now - last) / 90
-            if res < 90:
+            minutes = (now - last) / 60
+            if minutes < DATA.get('wait'):
                 worker.bot.send_message(
                     worker.chat.id,
-                    worker.loc.get("post_wait").format(int(90 - res))
+                    worker.loc.get("post_wait").format(DATA.get('wait'))
                 )
                 return worker.admin_menu()
         worker.send_post(posts)
@@ -714,7 +758,7 @@ def add_admin(worker: "worker2.Worker", selection: telegram.CallbackQuery = None
                 worker.loc.get("admin_data_invalid")
             )
             return worker.admin_menu()
-        username = data[0].replace("https://t.me/", "")
+        username = data[0].replace("https://t.me/", "").lower()  # all usersname in lower case
         username = username if username.startswith("@") else "@" + username
         worker.promoteuser(username, days=int(data[1]))
         worker.bot.send_message(

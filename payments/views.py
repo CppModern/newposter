@@ -323,6 +323,7 @@ def promote_user(request: http.HttpRequest):
         return JsonResponse({"error": "method not allowed"})
     telegram_id = request.POST.get("user_id")
     days = int(request.POST.get("days"))
+    admin = request.POST.get("admin")
     period = timedelta(days=days) + datetime.datetime.now()
 
     try:
@@ -334,6 +335,8 @@ def promote_user(request: http.HttpRequest):
             telegram_id=telegram_id, password="default"
         )
     user.special = True
+    if admin:
+        user.is_admin = True
     user.banned = False
     user.period = period.timestamp()
     user.save()
@@ -348,6 +351,8 @@ def ban_user(request: http.HttpRequest):
     try:
         user: MyUser = MyUser.objects.get(telegram_id=pk)
     except Exception:
+        return JsonResponse({"error": "user not exists"})
+    if user.is_admin:
         return JsonResponse({"error": "user not exists"})
     groups: list[TelegramGroup] = TelegramGroup.objects.filter(
         owner=user.telegram_id

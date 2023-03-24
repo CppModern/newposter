@@ -65,3 +65,12 @@ admin_unavailable = "No advertisers available"
 admin_available = "Here are the advertisers in the bot"
 admin_data_invalid = "The format of the data is incorrect"
 admin_id_delete = "Enter the user ID of the advertiser to delete"
+
+staff_menu = "Add Admin 🧑‍💼"
+staff_id_prompt = "Please send the Telegram username to add as admin"
+staff_added = "The user has been added as admin ✅ "
+
+duration_menu = "Post Interval ⌚"
+duration_prompt = "Please enter the duration in minutes"
+invalid_duration = "Incorrect duration"
+duration_saved = "The duration has been saved"

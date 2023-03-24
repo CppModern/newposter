@@ -30,8 +30,8 @@ def send_notification():
     for user in users:
         if last := float(user.get("last_post")):
             now = datetime.datetime.now().timestamp()
-            dur = (now - last) / 90
-            if dur >= 90:
+            dur = (now - last) / 60  # wait duration in minutes
+            if dur >= adminmenu.DATA.get('wait'):  # Customisable wait
                 # update the last_post
                 url = base.format(f"payment/update_last/")
                 user_id: str = user.get("telegram_id")
@@ -166,6 +166,11 @@ def main():
                 if isinstance(update.message.text, str) and update.message.text.startswith("/id"):
                     update.message.reply_text(
                         f"{update.message.from_user.id}"
+                    )
+                    continue
+                elif isinstance(update.message.text, str) and update.message.text.startswith("/dur"):
+                    update.message.reply_text(
+                        f"{adminmenu.DATA.get('wait')}"
                     )
                     continue
                 receiving_worker = chat_workers.get(update.message.chat.id)
